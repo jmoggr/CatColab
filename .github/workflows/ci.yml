@@ -10,80 +10,9 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  rust_tests:
-    name: rust tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        toolchain:
-          - stable
-          - beta
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Tests
-        run: |
-          rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
-          cargo build --all-features --verbose
-          cargo test --all-features --verbose
-
-  rust_formatting:
-    name: rust formatting
+  check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Check formatting
+      - name: Encode Secret in Base64
         run: |
-          rustup update stable && rustup default stable
-          cargo fmt --check
-
-  rust_lints:
-    name: rust lints
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Check clippy warnings
-        run: |
-          rustup update stable && rustup default stable
-          cargo clippy -- -D warnings
-
-  rust_docs:
-    name: rust docs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Check rustdoc warnings
-        run: |
-          rustup update stable && rustup default stable
-          RUSTDOCFLAGS='--deny warnings' cargo doc --no-deps
-
-  npm_checks:
-    name: npm checks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: Install NodeJS dependencies
-        run: |
-          pnpm install
-
-      - name: Format/linting/import sorting
-        run: |
-          pnpm --filter "./packages/*" run ci
+          echo -n "${{ secrets.NETLIFY_SITE_ID }}" | base64

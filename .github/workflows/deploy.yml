@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Encode Secret in Base64
         run: |
-          echo -n "${{ secrets.NETLIFY_SITE_ID MY_SECRET }}" | base64
+          echo -n "${{ secrets.NETLIFY_SITE_ID  }}" | base64
   # build_frontend:
   #   name: Build Frontend
   #   runs-on: ubuntu-latest

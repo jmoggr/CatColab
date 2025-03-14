@@ -205,7 +205,7 @@ in
     {
       users = [
         "catcolab"
-        "deployer"
+        "deployuser"
       ];
       commands = [
         {
@@ -240,12 +240,11 @@ in
     }
   ];
 
-  users.users.deployer = {
+  users.users.deployuser = {
     isNormalUser = true;
-    shell = "/sbin/nologin";
     openssh.authorizedKeys.keys = [
       ''
-        command="${updateScript}/bin/catcolab-update",no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXGvHcfDo2aHyLqaMH+POGhySJ4pOmCiL7RRGxboPuK catcolab-next-deployer
+        command="${updateScript}/bin/catcolab-update",no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXGvHcfDo2aHyLqaMH+POGhySJ4pOmCiL7RRGxboPuK catcolab-next-deployuser
       ''
     ];
   };

@@ -1,60 +1,76 @@
-{ inputs, ... }:
+{
+  inputs,
+  pkgs,
+  config,
+  ...
+}:
 
 let
-    owen     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF2sBTuqGoEXRWpBRqTBwZZPDdLGGJ0GQcuX5dfIZKb4 o@red-special";
-    epatters = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAKXx6wMJSeYKCHNmbyR803RQ72uto9uYsHhAPPWNl2D evan@epatters.org";
-    jmoggr   = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMiaHaeJ5PQL0mka/lY1yGXIs/bDK85uY1O3mLySnwHd j@jmoggr.com";
+  owen = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF2sBTuqGoEXRWpBRqTBwZZPDdLGGJ0GQcuX5dfIZKb4 o@red-special";
+  epatters = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAKXx6wMJSeYKCHNmbyR803RQ72uto9uYsHhAPPWNl2D evan@epatters.org";
+  jmoggr = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMiaHaeJ5PQL0mka/lY1yGXIs/bDK85uY1O3mLySnwHd j@jmoggr.com";
 in
 {
-    imports = [
-        ./backend.nix
-        "${inputs.nixpkgs}/nixos/modules/virtualisation/amazon-image.nix"
+  imports = [
+    ./backend.nix
+    "${inputs.nixpkgs}/nixos/modules/virtualisation/amazon-image.nix"
+  ];
+
+  networking.hostName = "catcolab-next";
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
+
+  security.sudo.wheelNeedsPassword = false;
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = "owen@topos.institute";
+
+  users.mutableUsers = false;
+
+  users.groups.catcolab = { };
+
+  users.users.catcolab = {
+    isNormalUser = true;
+    group = "catcolab";
+    openssh.authorizedKeys.keys = [
+      owen
+      epatters
+      jmoggr
     ];
+  };
 
-    networking.hostName = "catcolab-next";
-    networking.firewall.allowedTCPPorts = [ 80 443 ];
+  users.users.owen = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    openssh.authorizedKeys.keys = [ owen ];
+  };
 
-    security.sudo.wheelNeedsPassword = false;
-    security.acme.acceptTerms = true;
-    security.acme.defaults.email = "owen@topos.institute";
+  users.users.epatters = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [ epatters ];
+  };
 
-    users.mutableUsers = false;
+  users.users.jmoggr = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [ jmoggr ];
+  };
 
-    users.groups.catcolab = {};
+  users.users.root.openssh.authorizedKeys.keys = [
+    owen
+    epatters
+    jmoggr
+  ];
 
-    users.users.catcolab = {
-        isNormalUser = true;
-        group = "catcolab";
-        openssh.authorizedKeys.keys = [ owen epatters jmoggr ];
-    };
+  time.timeZone = "America/New_York";
 
-    users.users.owen = {
-        isNormalUser = true;
-        extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-        openssh.authorizedKeys.keys = [ owen ];
-    };
+  services.openssh.enable = true;
 
-    users.users.epatters = {
-        isNormalUser = true;
-        extraGroups = [ "wheel" ];
-        openssh.authorizedKeys.keys = [ epatters ];
-    };
+  system.stateVersion = "24.05";
 
-    users.users.jmoggr = {
-        isNormalUser = true;
-        extraGroups = [ "wheel" ];
-        openssh.authorizedKeys.keys = [ jmoggr ];
-    };
-
-    users.users.root.openssh.authorizedKeys.keys = [ owen epatters jmoggr ];
-
-    time.timeZone = "America/New_York";
-
-    services.openssh.enable = true;
-
-    system.stateVersion = "24.05";
-
-    nix.extraOptions = ''
-        experimental-features = nix-command flakes
-    '';
+  nix.extraOptions = ''
+    experimental-features = nix-command flakes
+  '';
 }

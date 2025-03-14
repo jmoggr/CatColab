@@ -119,7 +119,7 @@ jobs:
   deploy_frontend:
     name: Deploy frontend to netlify
     runs-on: ubuntu-latest
-    needs: [build_dev-docs, build_frontend, build_rust_docs]
+    needs: [build_dev_docs, build_frontend, build_rust_docs]
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'ToposInstitute/CatColab'
     steps:
       - name: Checkout repository

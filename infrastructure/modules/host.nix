@@ -19,7 +19,7 @@ let
       rm -rf ./catcolab
     fi
 
-    git clone -b "$branch" https://github.com/ToposInstitute/CatColab.git catcolab
+    git clone -b "$branch" https://github.com/jmoggr/CatColab.git catcolab
     cd catcolab
 
     sudo /run/current-system/sw/bin/nixos-rebuild switch --flake .#catcolab-jmoggr

@@ -13,12 +13,12 @@ let
     #!/usr/bin/env bash
     set -ex
 
-    commit_sha="$1"
+    # commit_sha="$1"
 
-    if [ -z "$commit_sha" ]; then
-      echo "Missing commit SHA"
-      exit 1
-    fi
+    # if [ -z "$commit_sha" ]; then
+    #   echo "Missing commit SHA"
+    #   exit 1
+    # fi
 
     if [ -d "catcolab" ]; then
       rm -rf ./catcolab
@@ -26,7 +26,9 @@ let
 
     git clone https://github.com/jmoggr/CatColab.git catcolab
     cd catcolab
-    git checkout "$commit_sha"
+    git checkout nixification
+
+    # "$commit_sha"
 
     sudo /run/current-system/sw/bin/nixos-rebuild switch --flake .#catcolab-jmoggr
   '';

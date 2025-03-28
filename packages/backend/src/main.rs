@@ -1,4 +1,5 @@
 use axum::{Router, routing::get};
+use chrono::prelude::*;
 use firebase_auth::FirebaseAuth;
 use socketioxide::SocketIo;
 use sqlx::postgres::PgPoolOptions;
@@ -28,6 +29,9 @@ fn automerge_io_port() -> String {
 
 #[tokio::main]
 async fn main() {
+    let now: DateTime<Utc> = Utc::now();
+
+    println!("Current UTC time: {}", now);
     tracing_subscriber::fmt().with_max_level(tracing::Level::INFO).init();
 
     let db = PgPoolOptions::new()

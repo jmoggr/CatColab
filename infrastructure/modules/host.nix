@@ -24,7 +24,8 @@ let
       rm -rf ./catcolab
     fi
 
-    git clone https://github.com/jmoggr/CatColab.git catcolab
+    git clone -b "$branch" https://github.com/jmoggr/CatColab.git catcolab
+
     cd catcolab
     git checkout "$commit_sha"
 

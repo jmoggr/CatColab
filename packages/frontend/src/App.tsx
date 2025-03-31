@@ -83,11 +83,11 @@ const routes: RouteDefinition[] = [
         matchFilters: refIsUUIDFilter,
         component: lazy(() => import("./analysis/analysis_editor")),
     },
-    {
-        path: "/help",
-        component: lazy(() => import("./help/help_container")),
-        children: helpRoutes,
-    },
+    // {
+    //     path: "/help",
+    //     component: lazy(() => import("./help/help_container")),
+    //     children: helpRoutes,
+    // },
     {
         path: "/dev/*",
         component: (props) => {

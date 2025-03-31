@@ -90,6 +90,7 @@
         buildInputs =
           with pkgs;
           [
+            netlify-cli
             rustc
             cargo
             openssl

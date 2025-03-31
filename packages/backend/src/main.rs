@@ -28,6 +28,7 @@ fn automerge_io_port() -> String {
 
 #[tokio::main]
 async fn main() {
+    println!("build2");
     tracing_subscriber::fmt().with_max_level(tracing::Level::INFO).init();
 
     let db = PgPoolOptions::new()

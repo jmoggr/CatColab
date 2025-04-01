@@ -213,7 +213,7 @@ jobs:
           key: nix-store3
 
       - name: Update cache
-        if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
+        if: steps.cache-nix-store-restore.outputs.cache-hit == 'true'
         run: |
           mv ./nix-store-cache/* /nix/store
 

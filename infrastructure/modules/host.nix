@@ -26,6 +26,7 @@ let
 
     git clone https://github.com/jmoggr/CatColab.git catcolab
     cd catcolab
+    git log
     git checkout "$commit_sha"
 
     sudo /run/current-system/sw/bin/nixos-rebuild switch --flake .#catcolab-jmoggr

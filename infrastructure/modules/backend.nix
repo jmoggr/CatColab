@@ -39,12 +39,12 @@ let
   '';
 
   catcolabPackages = {
-    backend = pkgs.lib.callPackageWith pkgs ../../packages/backend/default.nix {
-    };
+    # backend = pkgs.lib.callPackageWith pkgs ../../packages/backend/default.nix {
+    # };
 
-    automerge-doc-server =
-      pkgs.lib.callPackageWith pkgs ../../packages/automerge-doc-server/default.nix
-        { };
+    # automerge-doc-server =
+    #   pkgs.lib.callPackageWith pkgs ../../packages/automerge-doc-server/default.nix
+    #     { };
   };
 in
 with lib;

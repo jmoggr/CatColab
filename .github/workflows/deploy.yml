@@ -60,7 +60,6 @@ jobs:
             base=$(basename "$file")
             if [ ! -e "/nix/store/$base" ]; then
               mv "$file" /nix/store/
-            else
             fi
           done
 

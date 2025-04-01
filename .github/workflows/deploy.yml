@@ -215,5 +215,8 @@ jobs:
           ssh-keyscan backend-next.catcolab.org >> ~/.ssh/known_hosts
 
       - name: Deploy
-        run: deploy .#catcolab-jmoggr --ssh-known-hosts --skip-checks
-
+        run: |
+          deploy .#catcolab-jmoggr --ssh-known-hosts --skip-checks
+          nix build .#catcolab-jmoggr --out-link ./result
+          nix-collect-garbage -d
+          nix-store --gc

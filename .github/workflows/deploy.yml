@@ -32,19 +32,36 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Restore store
-        id: cache-primes-restore
-        uses: nix-community/cache-nix-action/restore@v6
+      # We explicitly manage saving and restoring the cache so that we can ensure the cache will still be
+      # updated if a build step fails. This greatly reduces the time it takes to debug a failing deploy.
+      - name: Restore /nix/store from cache
+        id: cache-nix-store-restore
+        uses: actions/cache/restore@v4
         with:
-          paths: /nix/store
-          primary-key: nix-store-1
+          path: ./nix-store-cache
 
+          # We use a constant cache key to always restore and update the cache. Nix's garbage collector
+          # will clean up stale entries, so we rely on that instead of changing cache keys. Saving the
+          # cache adds about 40 seconds to the build time, which we accept in order to avoid the much
+          # larger cost (~8 minutes) of rebuilding the entire /nix/store from scratch when there's a
+          # cache miss.
+          key: nix-store4
 
-      # - uses: nix-community/cache-nix-action@v6
-      #   id: cache
-      #   with:
-      #     primary-key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-          # paths: path/to/dependencies
+      - name: Update cache
+        if: always()
+        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
+        run: |
+          ls ./nix-store-cache
+
+      - name: Update cache
+        if: steps.cache-nix-store-restore.outputs.cache-hit == 'true'
+        run: |
+          for file in ./nix-store-cache/*; do
+            base=$(basename "$file")
+            if [ ! -e "/nix/store/$base" ]; then
+              mv "$file" /nix/store/
+            fi
+          done
 
       - name: Set up SSH key
         run: |
@@ -55,14 +72,16 @@ jobs:
 
       - name: Deploy and Clean Up
         run: |
-          nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
           # Build the system configuration; this creates a symlink "result" which will be used to create a GC root
+          # nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
 
           # Deploy the system to the remote host, this will reuse the artifacts built in the previous stup
           # nix run .#deploy-rs -- .#${TARGET_HOST} --skip-checks
 
           # Pin the current system build result explicitly as a GC root
-          nix-store --add-root /tmp/current-system --indirect ./result
+          # nix-store --add-root /tmp/current-system --indirect ./result
+
+          nix profile install github:serokell/deploy-rs
 
           # Garbage collect store paths not reachable from:
           #   - the current system build, pinned as /tmp/current-system
@@ -73,10 +92,19 @@ jobs:
 
           du -hs /nix/store
 
-      - name: save store
+      - name: Update cache
         if: always()
-        id: cache-primes-save
-        uses: nix-community/cache-nix-action/save@v6
+        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
+        run: |
+          rm -rf ./nix-store-cache
+          mkdir ./nix-store-cache
+          cp -r /nix/store/* ./nix-store-cache/
+          ls ./nix-store-cache
+
+      - name: Cache /nix/store
+        id: cache-nix-store-save
+        if: always()
+        uses: actions/cache/save@v4
         with:
-          paths: /nix/store
-          primary-key: nix-store-1
+          key: nix-store4
+          path: ./nix-store-cache

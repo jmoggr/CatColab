@@ -221,15 +221,20 @@ jobs:
 
       - name: Deploy and Clean Up
         run: |
-          # Build the system configuration; this creates a symlink "result" which is a GC root.
+          # Build the system configuration; this creates a symlink "result" which will be used to create a GC root
           nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
-          # Run the deployment using deploy‑rs (which is pinned in the nix profile)
-          deploy-rs ${TARGET_HOST} --skip-checks
-          # Pin the current system build result explicitly as a GC root.
+
+          # Deploy the system to the remote host, this will reuse the artifacts built in the previous stup
+          deploy ${TARGET_HOST} --skip-checks
+
+          # Pin the current system build result explicitly as a GC root
           nix-store --add-root /tmp/current-system --indirect ./result
+
           # Garbage collect store paths not reachable from:
-          #   • the current system build (pinned as /tmp/current-system),
-          #   • the deployed flake’s dependencies (reachable from the build), or
-          #   • deploy‑rs (pinned in the nix profile).
+          #   • the current system build, pinned as /tmp/current-system
+          #   • the deployed flake’s dependencies, reachable from the ./result
+          #   • deploy‑rs, pinned in the nix profile
           nix-collect-garbage -d
           nix-store --gc
+
+          du -hs /nix/store

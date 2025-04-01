@@ -39,12 +39,12 @@ let
   '';
 
   catcolabPackages = {
-    # backend = pkgs.lib.callPackageWith pkgs ../../packages/backend/default.nix {
-    # };
+    backend = pkgs.lib.callPackageWith pkgs ../../packages/backend/default.nix {
+    };
 
-    # automerge-doc-server =
-    #   pkgs.lib.callPackageWith pkgs ../../packages/automerge-doc-server/default.nix
-    #     { };
+    automerge-doc-server =
+      pkgs.lib.callPackageWith pkgs ../../packages/automerge-doc-server/default.nix
+        { };
   };
 in
 with lib;
@@ -103,53 +103,53 @@ with lib;
       };
     };
 
-    # systemd.services.migrations = {
-    #   enable = true;
-    #   after = [ "database-setup.service" ];
-    #   wants = [ "database-setup.service" ];
+    systemd.services.migrations = {
+      enable = true;
+      after = [ "database-setup.service" ];
+      wants = [ "database-setup.service" ];
 
-    #   serviceConfig = {
-    #     User = "catcolab";
-    #     Type = "oneshot";
-    #     ExecStart = lib.getExe databaseMigrationScript;
-    #     EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
-    #   };
-    # };
+      serviceConfig = {
+        User = "catcolab";
+        Type = "oneshot";
+        ExecStart = lib.getExe databaseMigrationScript;
+        EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
+      };
+    };
 
-    # systemd.services.backend = {
-    #   enable = true;
-    #   wantedBy = [ "multi-user.target" ];
-    #   after = [ "migrations.service" ];
-    #   wants = [ "migrations.service" ];
+    systemd.services.backend = {
+      enable = true;
+      wantedBy = [ "multi-user.target" ];
+      after = [ "migrations.service" ];
+      wants = [ "migrations.service" ];
 
-    #   environment = {
-    #     PORT = config.catcolab.backend.backendPort;
-    #   };
+      environment = {
+        PORT = config.catcolab.backend.backendPort;
+      };
 
-    #   serviceConfig = {
-    #     User = "catcolab";
-    #     Type = "simple";
-    #     Restart = "on-failure";
-    #     ExecStart = lib.getExe catcolabPackages.backend;
-    #     EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
-    #   };
-    # };
+      serviceConfig = {
+        User = "catcolab";
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = lib.getExe catcolabPackages.backend;
+        EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
+      };
+    };
 
-    # systemd.services.automerge = {
-    #   enable = true;
-    #   wantedBy = [ "multi-user.target" ];
+    systemd.services.automerge = {
+      enable = true;
+      wantedBy = [ "multi-user.target" ];
 
-    #   environment = {
-    #     PORT = config.catcolab.backend.automergePort;
-    #   };
+      environment = {
+        PORT = config.catcolab.backend.automergePort;
+      };
 
-    #   serviceConfig = {
-    #     User = "catcolab";
-    #     ExecStart = "${lib.getExe pkgs.nodejs_23} ${catcolabPackages.automerge-doc-server}/main.cjs";
-    #     Type = "simple";
-    #     Restart = "on-failure";
-    #   };
-    # };
+      serviceConfig = {
+        User = "catcolab";
+        ExecStart = "${lib.getExe pkgs.nodejs_23} ${catcolabPackages.automerge-doc-server}/main.cjs";
+        Type = "simple";
+        Restart = "on-failure";
+      };
+    };
 
     services.caddy = {
       enable = true;

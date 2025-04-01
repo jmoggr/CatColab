@@ -74,6 +74,7 @@ jobs:
           du -hs /nix/store
 
       - name: save store
+        if: always()
         id: cache-primes-save
         uses: nix-community/cache-nix-action/save@v6
         with:

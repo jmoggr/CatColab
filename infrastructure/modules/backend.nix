@@ -103,18 +103,18 @@ with lib;
       };
     };
 
-    systemd.services.migrations = {
-      enable = true;
-      after = [ "database-setup.service" ];
-      wants = [ "database-setup.service" ];
+    # systemd.services.migrations = {
+    #   enable = true;
+    #   after = [ "database-setup.service" ];
+    #   wants = [ "database-setup.service" ];
 
-      serviceConfig = {
-        User = "catcolab";
-        Type = "oneshot";
-        ExecStart = lib.getExe databaseMigrationScript;
-        EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
-      };
-    };
+    #   serviceConfig = {
+    #     User = "catcolab";
+    #     Type = "oneshot";
+    #     ExecStart = lib.getExe databaseMigrationScript;
+    #     EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
+    #   };
+    # };
 
     # systemd.services.backend = {
     #   enable = true;

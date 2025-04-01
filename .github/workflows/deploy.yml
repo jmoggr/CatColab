@@ -194,17 +194,21 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      # https://github.com/actions/cache/tree/main/save#always-save-cache     
+
+      # We explicitly manage saving and restoring the cache so that we can ensure the cache will still be
+      # updated if a build step fails. This greatly reduces the time it takes to debug a failing deploy.
       - name: Restore /nix/store from cache
         id: cache-nix-store-restore
         uses: actions/cache/restore@v4
         with:
           path: /nix/store
-          key: nix-store-${{ hashFiles('flake.lock') }}
+
+          # We are using a constant cache key to always restore and save the cache, nix's garbage
+          # collection will remove any items that become stale
+          key: nix-store
 
       - name: Set up SSH key
         run: |
@@ -240,8 +244,8 @@ jobs:
 
       - name: Cache /nix/store
         id: cache-nix-store-save
-        if: always() && steps.cache-nix-store-restore.outputs.cache-hit != 'true'
+        if: always()
         uses: actions/cache/save@v4
         with:
-          key: ${{ steps.cache-nix-store-restore.outputs.cache-primary-key }}
+          key: nix-store
           path: /nix/store

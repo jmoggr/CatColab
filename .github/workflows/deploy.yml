@@ -197,10 +197,6 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: ls
-        run: |
-          ls /nix/store
-
       # We explicitly manage saving and restoring the cache so that we can ensure the cache will still be
       # updated if a build step fails. This greatly reduces the time it takes to debug a failing deploy.
       - name: Restore /nix/store from cache

@@ -87,8 +87,8 @@ jobs:
           #   - the current system build, pinned as /tmp/current-system
           #   - the deployed flake’s dependencies, reachable from the ./result
           #   - deploy‑rs, pinned in the nix profile
-          nix-collect-garbage -d
-          nix-store --gc
+          # nix-collect-garbage -d
+          # nix-store --gc
 
           du -hs /nix/store
 

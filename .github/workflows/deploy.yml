@@ -32,36 +32,8 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      # We explicitly manage saving and restoring the cache so that we can ensure the cache will still be
-      # updated if a build step fails. This greatly reduces the time it takes to debug a failing deploy.
-      - name: Restore /nix/store from cache
-        id: cache-nix-store-restore
-        uses: actions/cache/restore@v4
-        with:
-          path: ./nix-store-cache
-
-          # We use a constant cache key to always restore and update the cache. Nix's garbage collector
-          # will clean up stale entries, so we rely on that instead of changing cache keys. Saving the
-          # cache adds about 40 seconds to the build time, which we accept in order to avoid the much
-          # larger cost (~8 minutes) of rebuilding the entire /nix/store from scratch when there's a
-          # cache miss.
-          key: nix-store4
-
-      - name: Update cache
-        if: always()
-        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
-        run: |
-          ls ./nix-store-cache
-
-      - name: Update cache
-        if: steps.cache-nix-store-restore.outputs.cache-hit == 'true'
-        run: |
-          for file in ./nix-store-cache/*; do
-            base=$(basename "$file")
-            if [ ! -e "/nix/store/$base" ]; then
-              mv "$file" /nix/store/
-            fi
-          done
+      - name: Run the Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
 
       - name: Set up SSH key
         run: |
@@ -89,20 +61,3 @@ jobs:
           nix-store --gc
 
           du -hs /nix/store
-
-      - name: Update cache
-        if: always()
-        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
-        run: |
-          rm -rf ./nix-store-cache
-          mkdir ./nix-store-cache
-          cp -r /nix/store/* ./nix-store-cache/
-          ls ./nix-store-cache
-
-      - name: Cache /nix/store
-        id: cache-nix-store-save
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          key: nix-store4
-          path: ./nix-store-cache

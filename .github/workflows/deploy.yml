@@ -87,8 +87,8 @@ jobs:
           du -hs /nix/store
 
       - name: Update cache
-        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         if: always()
+        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
           rm -rf ./nix-store-cache
           ln -s /nix/store ./nix-store-cache

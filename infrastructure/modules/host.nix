@@ -26,6 +26,7 @@ let
 
     git clone https://github.com/jmoggr/CatColab.git catcolab
     cd catcolab
+
     git show
     echo "$commit_sha"
     git checkout "$commit_sha"

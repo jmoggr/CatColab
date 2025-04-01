@@ -38,11 +38,11 @@ jobs:
         with:
           primary-key: nix-store-1
 
-      - uses: nix-community/cache-nix-action@v6
-        id: cache
-        with:
-          primary-key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-          paths: path/to/dependencies
+      # - uses: nix-community/cache-nix-action@v6
+      #   id: cache
+      #   with:
+      #     primary-key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          # paths: path/to/dependencies
 
       - name: Set up SSH key
         run: |

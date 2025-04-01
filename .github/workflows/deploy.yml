@@ -50,7 +50,14 @@ jobs:
       - name: Update cache
         if: steps.cache-nix-store-restore.outputs.cache-hit == 'true'
         run: |
-          mv -n ./nix-store-cache/* /nix/store
+          for file in ./nix-store-cache/*; do
+            base=$(basename "$file")
+            if [ ! -e "/nix/store/$base" ]; then
+              mv "$file" /nix/store/
+            else
+              echo "Skipping $file; /nix/store/$base already exists."
+            fi
+          done
 
       - name: Set up SSH key
         run: |

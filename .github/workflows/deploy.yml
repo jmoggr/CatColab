@@ -198,14 +198,13 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Cache Nix Store
-        uses: actions/cache@v4
+      # https://github.com/actions/cache/tree/main/save#always-save-cache     
+      - name: Restore /nix/store from cache
+        id: cache-nix-store-restore
+        uses: actions/cache/restore@v4
         with:
-          path: |
-            /nix/store
+          path: /nix/store
           key: nix-store-${{ hashFiles('flake.lock') }}
-          restore-keys: |
-            nix-store-
 
       - name: Set up SSH key
         run: |
@@ -239,11 +238,10 @@ jobs:
 
           du -hs /nix/store
 
-      - name: Post Cache Nix Store
-        if: always()
-        uses: actions/cache@v4
+      - name: Cache /nix/store
+        id: cache-nix-store-save
+        if: always() && steps.cache-nix-store-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
         with:
+          key: ${{ steps.cache-nix-store-restore.outputs.cache-primary-key }}
           path: /nix/store
-          key: nix-store-${{ hashFiles('flake.lock') }}
-          restore-keys: |
-            nix-store-

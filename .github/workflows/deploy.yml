@@ -185,8 +185,27 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' && github.ref_name == 'main'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v22
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Cache Nix Store
+        uses: actions/cache@v4
+        with:
+          path: |
+            /nix/store
+          key: nix-store-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-store-
+
+      - name: Install deploy-rs
+        run: nix profile install github:serokell/deploy-rs
 
       - name: Set up SSH key
         run: |
@@ -195,6 +214,6 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan backend-next.catcolab.org >> ~/.ssh/known_hosts
 
-      - name: Deploy via SSH
-        run: ssh deployuser@backend-next.catcolab.org "${GITHUB_SHA}"
+      - name: Deploy
+        run: deploy .#catcolab-jmoggr --ssh-known-hosts --skip-checks
 

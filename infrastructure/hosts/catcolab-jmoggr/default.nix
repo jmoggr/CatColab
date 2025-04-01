@@ -27,6 +27,7 @@ in
         owen
         epatters
         jmoggr
+        catcolab-jmoggr-deployuser
       ];
       deployuserKey = catcolab-jmoggr-deployuser;
     };

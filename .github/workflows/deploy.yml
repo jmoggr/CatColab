@@ -62,10 +62,10 @@ jobs:
       - name: Deploy and Clean Up
         run: |
           # Build the system configuration; this creates a symlink "result" which will be used to create a GC root
-          # nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
+          nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
 
           # Deploy the system to the remote host, this will reuse the artifacts built in the previous stup
-          # nix run .#deploy-rs -- .#${TARGET_HOST} --skip-checks
+          nix run .#deploy-rs -- .#${TARGET_HOST} --skip-checks
 
           # Pin the current system build result explicitly as a GC root
           nix-store --add-root /tmp/current-system --indirect ./result

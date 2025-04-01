@@ -45,7 +45,7 @@ jobs:
           # cache adds about 40 seconds to the build time, which we accept in order to avoid the much
           # larger cost (~8 minutes) of rebuilding the entire /nix/store from scratch when there's a
           # cache miss.
-          key: nix-store6
+          key: nix-store7
 
       - name: Update cache
         if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
@@ -106,4 +106,4 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ./nix-store-cache
-          key: nix-store6
+          key: nix-store7

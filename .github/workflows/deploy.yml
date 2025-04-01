@@ -224,7 +224,7 @@ jobs:
           # Build the system configuration; this creates a symlink "result" which is a GC root.
           nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
           # Run the deployment using deploy‑rs (which is pinned in the nix profile)
-          deploy-rs ${TARGET_HOST} --ssh-known-hosts --skip-checks
+          deploy-rs ${TARGET_HOST} --skip-checks
           # Pin the current system build result explicitly as a GC root.
           nix-store --add-root /tmp/current-system --indirect ./result
           # Garbage collect store paths not reachable from:

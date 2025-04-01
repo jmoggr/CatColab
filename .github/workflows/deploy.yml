@@ -106,5 +106,5 @@ jobs:
         if: always()
         uses: actions/cache/save@v4
         with:
-          key: nix-store5
           path: ./nix-store-cache
+          key: nix-store5

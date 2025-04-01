@@ -95,6 +95,7 @@ jobs:
         # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
           rm -rf ./nix-store-cache
+          mkdir ./nix-store-cache
           cp -r /nix/store/* ./nix-store-cache/
           ls ./nix-store-cache
 

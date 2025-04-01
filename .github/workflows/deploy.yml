@@ -220,6 +220,6 @@ jobs:
       - name: Deploy
         run: |
           nix build .#nixosConfigurations.${TARGET_HOST}.config.system.build.toplevel --out-link ./result
-          deploy .#${TARGET_HOST} --ssh-known-hosts --skip-checks
+          nix run github:serokell/deploy-rs .#${TARGET_HOST} --ssh-known-hosts --skip-checks
           nix-collect-garbage -d
           nix-store --gc

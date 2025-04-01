@@ -116,40 +116,40 @@ with lib;
       };
     };
 
-    systemd.services.backend = {
-      enable = true;
-      wantedBy = [ "multi-user.target" ];
-      after = [ "migrations.service" ];
-      wants = [ "migrations.service" ];
+    # systemd.services.backend = {
+    #   enable = true;
+    #   wantedBy = [ "multi-user.target" ];
+    #   after = [ "migrations.service" ];
+    #   wants = [ "migrations.service" ];
 
-      environment = {
-        PORT = config.catcolab.backend.backendPort;
-      };
+    #   environment = {
+    #     PORT = config.catcolab.backend.backendPort;
+    #   };
 
-      serviceConfig = {
-        User = "catcolab";
-        Type = "simple";
-        Restart = "on-failure";
-        ExecStart = lib.getExe catcolabPackages.backend;
-        EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
-      };
-    };
+    #   serviceConfig = {
+    #     User = "catcolab";
+    #     Type = "simple";
+    #     Restart = "on-failure";
+    #     ExecStart = lib.getExe catcolabPackages.backend;
+    #     EnvironmentFile = config.age.secrets.backendSecretsForCatcolab.path;
+    #   };
+    # };
 
-    systemd.services.automerge = {
-      enable = true;
-      wantedBy = [ "multi-user.target" ];
+    # systemd.services.automerge = {
+    #   enable = true;
+    #   wantedBy = [ "multi-user.target" ];
 
-      environment = {
-        PORT = config.catcolab.backend.automergePort;
-      };
+    #   environment = {
+    #     PORT = config.catcolab.backend.automergePort;
+    #   };
 
-      serviceConfig = {
-        User = "catcolab";
-        ExecStart = "${lib.getExe pkgs.nodejs_23} ${catcolabPackages.automerge-doc-server}/main.cjs";
-        Type = "simple";
-        Restart = "on-failure";
-      };
-    };
+    #   serviceConfig = {
+    #     User = "catcolab";
+    #     ExecStart = "${lib.getExe pkgs.nodejs_23} ${catcolabPackages.automerge-doc-server}/main.cjs";
+    #     Type = "simple";
+    #     Restart = "on-failure";
+    #   };
+    # };
 
     services.caddy = {
       enable = true;
@@ -178,8 +178,8 @@ with lib;
       ++ [
         databaseSetupScript
         databaseMigrationScript
-        catcolabPackages.automerge-doc-server
-        catcolabPackages.backend
+        # catcolabPackages.automerge-doc-server
+        # catcolabPackages.backend
       ];
   };
 }

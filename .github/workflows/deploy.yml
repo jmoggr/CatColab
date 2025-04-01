@@ -48,6 +48,12 @@ jobs:
           key: nix-store4
 
       - name: Update cache
+        if: always()
+        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
+        run: |
+          ls ./nix-store-cache
+
+      - name: Update cache
         if: steps.cache-nix-store-restore.outputs.cache-hit == 'true'
         run: |
           for file in ./nix-store-cache/*; do
@@ -55,7 +61,6 @@ jobs:
             if [ ! -e "/nix/store/$base" ]; then
               mv "$file" /nix/store/
             else
-              echo "Skipping $file; /nix/store/$base already exists."
             fi
           done
 
@@ -91,7 +96,7 @@ jobs:
         # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
           rm -rf ./nix-store-cache
-          ln -s /nix/store ./nix-store-cache
+          cp -r /nix/store/* ./nix-store-cache/
           ls ./nix-store-cache
 
       - name: Cache /nix/store

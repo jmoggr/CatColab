@@ -1,5 +1,6 @@
 import { AutomergeServer } from "./server.js";
 import { SocketServer } from "./socket.js";
+console.log("build");
 
 const internal_port = process.env.AUTOMERGE_INTERNAL_PORT || 3000;
 const port = process.env.AUTOMERGE_PORT || 8010;

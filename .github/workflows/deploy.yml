@@ -203,7 +203,7 @@ jobs:
         id: cache-nix-store-restore
         uses: actions/cache/restore@v4
         with:
-          path: /nix/store
+          path: /nix-store-cache
 
           # We use a constant cache key to always restore and update the cache. Nix's garbage collector
           # will clean up stale entries, so we rely on that instead of changing cache keys. Saving the
@@ -218,6 +218,10 @@ jobs:
           echo "${{ secrets.CATCOLAB_NEXT_DEPLOYUSER_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan backend-next.catcolab.org >> ~/.ssh/known_hosts
+
+      - name: Update cache
+        run: |
+          mv /nix-store-cache/* /nix/store
 
       - name: Install deploy‑rs
         run: |

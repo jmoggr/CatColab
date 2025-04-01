@@ -249,7 +249,7 @@ jobs:
         # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
           rm -rf /nix-store-cache
-          ls -s /nix/store /nix-store-cache
+          ln -s /nix/store /nix-store-cache
           ls /nix-store-cache
 
       - name: Cache /nix/store

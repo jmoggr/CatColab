@@ -108,5 +108,10 @@
             inputs.crate2nix.packages.x86_64-linux.default
           ];
       };
+
+      apps.${system}.deploy-rs = {
+        type = "app";
+        program = pkgs.lib.getExe inputs.deploy-rs.packages.${system}.default;
+      };
     };
 }

@@ -101,8 +101,8 @@ jobs:
           du -hs ./nix-store-cache
 
       - name: Cache /nix/store
-        id: cache-nix-store-save
         if: always()
+        id: cache-nix-store-save
         uses: actions/cache/save@v4
         with:
           path: ./nix-store-cache

@@ -203,7 +203,7 @@ jobs:
         id: cache-nix-store-restore
         uses: actions/cache/restore@v4
         with:
-          path: /nix-store-cache
+          path: ./nix-store-cache
 
           # We use a constant cache key to always restore and update the cache. Nix's garbage collector
           # will clean up stale entries, so we rely on that instead of changing cache keys. Saving the
@@ -215,7 +215,7 @@ jobs:
       - name: Update cache
         if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
-          mv /nix-store-cache/* /nix/store
+          mv ./nix-store-cache/* /nix/store
 
       - name: Set up SSH key
         run: |
@@ -248,9 +248,9 @@ jobs:
         if: always()
         # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
-          rm -rf /nix-store-cache
-          ln -s /nix/store /nix-store-cache
-          ls /nix-store-cache
+          rm -rf ./nix-store-cache
+          ln -s /nix/store ./nix-store-cache
+          ls ./nix-store-cache
 
       - name: Cache /nix/store
         id: cache-nix-store-save
@@ -258,4 +258,4 @@ jobs:
         uses: actions/cache/save@v4
         with:
           key: nix-store3
-          path: /nix-store-cache
+          path: ./nix-store-cache

@@ -207,9 +207,6 @@ jobs:
           restore-keys: |
             nix-store-
 
-      - name: Install deploy-rs
-        run: nix profile install github:serokell/deploy-rs
-
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh

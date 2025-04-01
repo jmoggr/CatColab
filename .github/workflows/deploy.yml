@@ -244,10 +244,16 @@ jobs:
 
           du -hs /nix/store
 
+      - name: Update cache
+        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
+        run: |
+          rm -rf /nix-store-cache
+          ls -s /nix-store /nix-store-cache
+
       - name: Cache /nix/store
         id: cache-nix-store-save
         if: always()
         uses: actions/cache/save@v4
         with:
           key: nix-store3
-          path: /nix/store
+          path: /nix-store-cache

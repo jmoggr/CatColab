@@ -45,7 +45,7 @@ jobs:
           # cache adds about 40 seconds to the build time, which we accept in order to avoid the much
           # larger cost (~8 minutes) of rebuilding the entire /nix/store from scratch when there's a
           # cache miss.
-          key: nix-store4
+          key: nix-store5
 
       - name: Update cache
         if: always()
@@ -106,5 +106,5 @@ jobs:
         if: always()
         uses: actions/cache/save@v4
         with:
-          key: nix-store4
+          key: nix-store5
           path: ./nix-store-cache

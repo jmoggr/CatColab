@@ -48,10 +48,9 @@ jobs:
           key: nix-store6
 
       - name: Update cache
-        if: always()
-        # if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
+        if: steps.cache-nix-storej-restore.outputs.cache-hit == 'true'
         run: |
-          ls ./nix-store-cache
+          du -hs ./nix-store-cache
 
       - name: Update cache
         if: steps.cache-nix-store-restore.outputs.cache-hit == 'true'
@@ -99,7 +98,7 @@ jobs:
           sudo rm -rf ./nix-store-cache
           mkdir ./nix-store-cache
           cp -r /nix/store/* ./nix-store-cache/
-          ls ./nix-store-cache
+          du -hs ./nix-store-cache
 
       - name: Cache /nix/store
         id: cache-nix-store-save

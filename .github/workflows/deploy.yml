@@ -216,7 +216,7 @@ jobs:
 
       - name: Deploy
         run: |
-          nix build .#catcolab-jmoggr --out-link ./result
+          nix build .#nixosConfigurations.catcolab-jmoggr.config.system.build.toplevel --out-link ./result
           deploy .#catcolab-jmoggr --ssh-known-hosts --skip-checks
           nix-collect-garbage -d
           nix-store --gc

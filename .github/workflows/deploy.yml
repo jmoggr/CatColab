@@ -249,6 +249,7 @@ jobs:
         run: |
           rm -rf /nix-store-cache
           ls -s /nix-store /nix-store-cache
+          ls /nix-store-cache
 
       - name: Cache /nix/store
         id: cache-nix-store-save

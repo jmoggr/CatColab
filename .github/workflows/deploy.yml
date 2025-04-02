@@ -184,17 +184,24 @@ jobs:
     name: Deploy backend to AWS
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' && github.ref_name == 'main'
+    env:
+      TARGET_HOST: backend-next.jmoggr.com
+      HOST_CONFIG: catcolab-jmoggr
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.CATCOLAB_NEXT_DEPLOYUSER_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan backend-next.catcolab.org >> ~/.ssh/known_hosts
+          ssh-keyscan ${TARGET_HOST} >> ~/.ssh/known_hosts
 
-      - name: Deploy via SSH
-        run: ssh deployuser@backend-next.catcolab.org "${GITHUB_SHA}"
+      - name: Rsync the repo to remote host
+        run: |
+          rsync -az --delete ./ deployuser@${TARGET_HOST}:~/catcolab/
 
+      - name: Run nixos-rebuild switch remotely
+        run: |
+          ssh deployuser@${TARGET_HOST} "sudo /run/current-system/sw/bin/nixos-rebuild switch --flake ./catcolab#${HOST_CONFIG}"
